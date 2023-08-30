@@ -92,72 +92,36 @@ public class PlayerType : MonoBehaviour
 
 
             case Type.Mage:
-                gm.mageDamage = PlayerPrefs.GetFloat("mageDamage");
-
-                gm.mageHealth = PlayerPrefs.GetFloat("mageHealth");
-                playerHealth.health = gm.mageHealth;
-
-                gm.mageFireballDamage = PlayerPrefs.GetFloat("mageFireballDamage");
-
-                gm.mageAreaDamage = PlayerPrefs.GetFloat("mageAreaDamage");
-
-                gm.mageEnergyEarn = PlayerPrefs.GetFloat("mageEnergyEarn");
+                playerHealth.maxHealth = gm.mageHealth;
+                playerHealth.SetHealth();
                 energyScript.energyIncrease = gm.mageEnergyEarn;
                 break;
 
 
             case Type.Ninja:
-                gm.ninjaDamage = PlayerPrefs.GetFloat("ninjaDamage");
-
-                gm.ninjaHealth = PlayerPrefs.GetFloat("ninjaHealth");
-                playerHealth.health = gm.ninjaHealth;
-
-                gm.invisibilityTime = PlayerPrefs.GetFloat("invisibilityTime");
-
-                gm.ninjaEnergyEarn = PlayerPrefs.GetFloat("ninjaEnergyEarn");
+                playerHealth.maxHealth = gm.ninjaHealth;
+                playerHealth.SetHealth();
                 energyScript.energyIncrease = gm.ninjaEnergyEarn;
                 break;
 
 
             case Type.Wizard:
-                gm.wizardDamage = PlayerPrefs.GetFloat("wizardDamage");
-
-                gm.wizardHealth = PlayerPrefs.GetFloat("wizardHealth");
-                playerHealth.health = gm.wizardHealth;
-
-                gm.wizardHeal = PlayerPrefs.GetFloat("wizardHeal");
-
-                gm.wizardHealTime = PlayerPrefs.GetFloat("wizardHealTime");
-
-                gm.wizardEnergyEarn = PlayerPrefs.GetFloat("wizardEnergyEarn");
+                playerHealth.maxHealth = gm.wizardHealth;
+                playerHealth.SetHealth();
                 energyScript.energyIncrease = gm.wizardEnergyEarn;
                 break;
 
 
             case Type.Bomber:
-                gm.bomberDamage = PlayerPrefs.GetFloat("bomberDamage");
-
-                gm.bomberHealth = PlayerPrefs.GetFloat("bomberHealth");
-                playerHealth.health = gm.bomberHealth;
-
-                gm.bomberSkillDamage = PlayerPrefs.GetFloat("bomberSkillDamage");
-
-                gm.bomberEnergyEarn = PlayerPrefs.GetFloat("bomberEnergyEarn");
+                playerHealth.maxHealth = gm.bomberHealth;
+                playerHealth.SetHealth();
                 energyScript.energyIncrease = gm.bomberEnergyEarn;
                 break;
 
 
             case Type.Hammer:
-                gm.hammerDamage = PlayerPrefs.GetFloat("hammerDamage");
-
-                gm.hammerHealth = PlayerPrefs.GetFloat("hammerHealth");
-                playerHealth.health = gm.hammerHealth;
-
-                gm.hammerFlameDamage = PlayerPrefs.GetFloat("hammerFlameDamage");
-
-                gm.hammerFlameTime = PlayerPrefs.GetFloat("hammerFlameTime");
-
-                gm.hammerEnergyEarn = PlayerPrefs.GetFloat("hammerEnergyEarn");
+                playerHealth.maxHealth = gm.hammerHealth;
+                playerHealth.SetHealth();
                 energyScript.energyIncrease = gm.hammerEnergyEarn;
                 break;
         }

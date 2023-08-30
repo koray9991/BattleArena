@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 public class Menu : MonoBehaviour
 {
+    CharacterUpgrades cu;
     public Transform slotMiddleTransform, slotLeftTransform, slotRightTransform;
     public Transform slotMiddle, slotLeft, slotRight;
     public Transform tank,tankDefaultPos;
@@ -35,10 +37,53 @@ public class Menu : MonoBehaviour
 
     public Button playButton;
 
-    public GameObject tankInfoPanel,archerInfoPanel;
+    public GameObject tankInfoPanel,archerInfoPanel,mageInfoPanel,ninjaInfoPanel,wizardInfoPanel,bomberInfoPanel,hammerInfoPanel;
+
+    public int warriorBought;
+    public GameObject warriorGray;
+    public GameObject warriorBuyButton;
+    public float warriorPrice;
+    public TextMeshProUGUI warriorPriceText;
+
+    public int archerBought;
+    public GameObject archerGray;
+    public GameObject archerBuyButton;
+    public float archerPrice;
+    public TextMeshProUGUI archerPriceText;
+
+    public int mageBought;
+    public GameObject mageGray;
+    public GameObject mageBuyButton;
+    public float magePrice;
+    public TextMeshProUGUI magePriceText;
+
+    public int ninjaBought;
+    public GameObject ninjaGray;
+    public GameObject ninjaBuyButton;
+    public float ninjaPrice;
+    public TextMeshProUGUI ninjaPriceText;
+
+    public int wizardBought;
+    public GameObject wizardGray;
+    public GameObject wizardBuyButton;
+    public float wizardPrice;
+    public TextMeshProUGUI wizardPriceText;
+
+    public int bomberBought;
+    public GameObject bomberGray;
+    public GameObject bomberBuyButton;
+    public float bomberPrice;
+    public TextMeshProUGUI bomberPriceText;
+
+    public int hammerBought;
+    public GameObject hammerGray;
+    public GameObject hammerBuyButton;
+    public float hammerPrice;
+    public TextMeshProUGUI hammerPriceText;
 
     private void Start()
     {
+        cu = GetComponent<CharacterUpgrades>();
         slotNum1 = PlayerPrefs.GetInt("slotNum1");
         slotNum2 = PlayerPrefs.GetInt("slotNum2");
         slotNum3 = PlayerPrefs.GetInt("slotNum3");
@@ -226,7 +271,9 @@ public class Menu : MonoBehaviour
         SetBattlePanel();
         PlayButtonCheck();
 
-        CloseTankInfoPanel(); CloseArcherInfoPanel();
+        CloseTankInfoPanel(); CloseArcherInfoPanel(); CloseMageInfoPanel(); CloseNinjaInfoPanel(); CloseWizardInfoPanel(); CloseBomberInfoPanel(); CloseHammerInfoPanel();
+
+        WarriorCheck(); ArcherCheck(); MageCheck(); NinjaCheck(); WizardCheck(); BomberCheck(); HammerCheck();
     }
     public void SetBattlePanel()
     {
@@ -844,11 +891,34 @@ public class Menu : MonoBehaviour
     }
     public void EnableUseButtons()
     {
-        tankUseButton.SetActive(true);
-        ninjaUseButton.SetActive(true);
-        mageUseButton.SetActive(true);
-        archerUseButton.SetActive(true);
-        wizardUseButton.SetActive(true);
+        if (warriorBought == 1)
+        {
+            tankUseButton.SetActive(true);
+        }
+        if (archerBought == 1)
+        {
+            archerUseButton.SetActive(true);
+        }
+        if (mageBought == 1)
+        {
+            mageUseButton.SetActive(true);
+        }
+        if (ninjaBought == 1)
+        {
+            ninjaUseButton.SetActive(true);
+        }
+        if (wizardBought == 1)
+        {
+            wizardUseButton.SetActive(true);
+        }
+        if (bomberBought == 1)
+        {
+            bomberUseButton.SetActive(true);
+        }
+        if (hammerBought == 1)
+        {
+            hammerUseButton.SetActive(true);
+        }
     }
     
     public void PlayGame()
@@ -918,6 +988,238 @@ public class Menu : MonoBehaviour
     public void CloseArcherInfoPanel()
     {
         archerInfoPanel.SetActive(false);
+    }
+    public void OpenMageInfoPanel()
+    {
+        mageInfoPanel.SetActive(true);
+    }
+    public void CloseMageInfoPanel()
+    {
+        mageInfoPanel.SetActive(false);
+    }
+    public void OpenNinjaInfoPanel()
+    {
+        ninjaInfoPanel.SetActive(true);
+    }
+    public void CloseNinjaInfoPanel()
+    {
+        ninjaInfoPanel.SetActive(false);
+    }
+    public void OpenWizardInfoPanel()
+    {
+        wizardInfoPanel.SetActive(true);
+    }
+    public void CloseWizardInfoPanel()
+    {
+        wizardInfoPanel.SetActive(false);
+    }
+    public void OpenBomberInfoPanel()
+    {
+        bomberInfoPanel.SetActive(true);
+    }
+    public void CloseBomberInfoPanel()
+    {
+        bomberInfoPanel.SetActive(false);
+    }
+    public void OpenHammerInfoPanel()
+    {
+        hammerInfoPanel.SetActive(true);
+    }
+    public void CloseHammerInfoPanel()
+    {
+        hammerInfoPanel.SetActive(false);
+    }
+
+    public void BuyWarrior()
+    {
+        if (cu.gold >= warriorPrice)
+        {
+            cu.ChangeMoney(-warriorPrice);
+            warriorBought = 1;
+            PlayerPrefs.SetInt("warriorBought", warriorBought);
+            WarriorCheck();
+        }
+    }
+    public void BuyArcher()
+    {
+        if (cu.gold >= archerPrice)
+        {
+            cu.ChangeMoney(-archerPrice);
+            archerBought = 1;
+            PlayerPrefs.SetInt("archerBought", archerBought);
+            ArcherCheck();
+        }
+    }
+    public void BuyMage()
+    {
+        if (cu.gold >= magePrice)
+        {
+            cu.ChangeMoney(-magePrice);
+            mageBought = 1;
+            PlayerPrefs.SetInt("mageBought", mageBought);
+            MageCheck();
+        }
+    }
+    public void BuyNinja()
+    {
+        if (cu.gold >= ninjaPrice)
+        {
+            cu.ChangeMoney(-ninjaPrice);
+            ninjaBought = 1;
+            PlayerPrefs.SetInt("ninjaBought", ninjaBought);
+            NinjaCheck();
+        }
+    }
+    public void BuyWizard()
+    {
+        if (cu.gold >= wizardPrice)
+        {
+            cu.ChangeMoney(-wizardPrice);
+            wizardBought = 1;
+            PlayerPrefs.SetInt("wizardBought", wizardBought);
+            WizardCheck();
+        }
+    }
+    public void BuyBomber()
+    {
+        if (cu.gold >= bomberPrice)
+        {
+            cu.ChangeMoney(-bomberPrice);
+            bomberBought = 1;
+            PlayerPrefs.SetInt("bomberBought", bomberBought);
+            BomberCheck();
+        }
+    }
+    public void BuyHammer()
+    {
+        if (cu.gold >= hammerPrice)
+        {
+            cu.ChangeMoney(-hammerPrice);
+            hammerBought = 1;
+            PlayerPrefs.SetInt("hammerBought", hammerBought);
+            HammerCheck();
+        }
+    }
+    public void WarriorCheck()
+    {
+
+        warriorBought = 1;
+        if (warriorBought == 0)
+        {
+            warriorGray.SetActive(true);
+            warriorBuyButton.SetActive(true);
+            warriorPriceText.text = warriorPrice.ToString();
+            tankUseButton.SetActive(false);
+        }
+        if (warriorBought == 1)
+        {
+            warriorGray.SetActive(false);
+            warriorBuyButton.SetActive(false);
+            tankUseButton.SetActive(true);
+        }
+    }
+    public void ArcherCheck()
+    {
+        archerBought = PlayerPrefs.GetInt("archerBought");
+        if (archerBought == 0)
+        {
+            archerGray.SetActive(true);
+            archerBuyButton.SetActive(true);
+            archerPriceText.text = archerPrice.ToString();
+            archerUseButton.SetActive(false);
+        }
+        if (archerBought == 1)
+        {
+            archerGray.SetActive(false);
+            archerBuyButton.SetActive(false);
+            archerUseButton.SetActive(true);
+        }
+    }
+    public void MageCheck()
+    {
+        mageBought = PlayerPrefs.GetInt("mageBought");
+        if (mageBought == 0)
+        {
+            mageGray.SetActive(true);
+            mageBuyButton.SetActive(true);
+            magePriceText.text = magePrice.ToString();
+            mageUseButton.SetActive(false);
+        }
+        if (mageBought == 1)
+        {
+            mageGray.SetActive(false);
+            mageBuyButton.SetActive(false);
+            mageUseButton.SetActive(true);
+        }
+    }
+    public void NinjaCheck()
+    {
+        ninjaBought = PlayerPrefs.GetInt("ninjaBought");
+        if (ninjaBought == 0)
+        {
+            ninjaGray.SetActive(true);
+            ninjaBuyButton.SetActive(true);
+            ninjaPriceText.text = ninjaPrice.ToString();
+            ninjaUseButton.SetActive(false);
+        }
+        if (ninjaBought == 1)
+        {
+            ninjaGray.SetActive(false);
+            ninjaBuyButton.SetActive(false);
+            ninjaUseButton.SetActive(true);
+        }
+    }
+
+    public void WizardCheck()
+    {
+        wizardBought = PlayerPrefs.GetInt("wizardBought");
+        if (wizardBought == 0)
+        {
+            wizardGray.SetActive(true);
+            wizardBuyButton.SetActive(true);
+            wizardPriceText.text = wizardPrice.ToString();
+            wizardUseButton.SetActive(false);
+        }
+        if (wizardBought == 1)
+        {
+            wizardGray.SetActive(false);
+            wizardBuyButton.SetActive(false);
+            wizardUseButton.SetActive(true);
+        }
+    }
+    public void BomberCheck()
+    {
+        bomberBought = PlayerPrefs.GetInt("bomberBought");
+        if (bomberBought == 0)
+        {
+            bomberGray.SetActive(true);
+            bomberBuyButton.SetActive(true);
+            bomberPriceText.text = bomberPrice.ToString();
+            bomberUseButton.SetActive(false);
+        }
+        if (bomberBought == 1)
+        {
+            bomberGray.SetActive(false);
+            bomberBuyButton.SetActive(false);
+            bomberUseButton.SetActive(true);
+        }
+    }
+    public void HammerCheck()
+    {
+        hammerBought = PlayerPrefs.GetInt("hammerBought");
+        if (hammerBought == 0)
+        {
+            hammerGray.SetActive(true);
+            hammerBuyButton.SetActive(true);
+            hammerPriceText.text = hammerPrice.ToString();
+            hammerUseButton.SetActive(false);
+        }
+        if (hammerBought == 1)
+        {
+            hammerGray.SetActive(false);
+            hammerBuyButton.SetActive(false);
+            hammerUseButton.SetActive(true);
+        }
     }
 }
 

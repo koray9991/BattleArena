@@ -38,7 +38,8 @@ public class Enemy : MonoBehaviour
     public float mageAreaDamageTimer;
     public GameObject canvas;
     public bool dead;
-
+    public Transform coins;
+    public int dropCoinCount;
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -55,7 +56,12 @@ public class Enemy : MonoBehaviour
         health = maxHealth;
         healthBar.fillAmount = health / maxHealth;
         healthText.text = health.ToString();
-       
+
+        dropCoinCount = Random.Range(2, 10);
+        for (int i = 0; i < coins.childCount; i++)
+        {
+            coins.GetChild(i).gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -270,7 +276,16 @@ public class Enemy : MonoBehaviour
             healthText.text = "0";
             dead = true;
             rangeObject.SetActive(false);
+            for (int i = 0; i < dropCoinCount; i++)
+            {
+                var myCoin = coins.GetChild(i);
+                myCoin.gameObject.SetActive(true);
+                myCoin.DOJump(new Vector3(transform.position.x + Random.Range(-3f, 3f), transform.position.y, transform.position.z + Random.Range(-3f, 3f)), 2, 1, 1.5f).SetEase(Ease.OutBounce);
+                DOVirtual.DelayedCall(2, () => { myCoin.GetComponent<Coin>().enabled = true; });
+              
+            }
         }
+        
     }
 
     private void OnTriggerEnter(Collider other)

@@ -6,6 +6,7 @@ using Cinemachine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using TMPro;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> menuChooseCharacters;
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
     public Transform[] spawnPos;
     public CinemachineBrain brain;
     public Vector3 vCamFollowOffset;
+    public float gold;
+    public TextMeshProUGUI goldText;
 
     [Header("Warrior")]
     public float warriorDamage;
@@ -71,7 +74,7 @@ public class GameManager : MonoBehaviour
         }
         activeCharacter = characters[0];
         activeCharacterNum = 0;
-        
+        ChangeMoney(0);
     }
 
     void Start()
@@ -82,12 +85,14 @@ public class GameManager : MonoBehaviour
         }
         CharacterChange();
     }
-
-    private void Update()
+    public void ChangeMoney(float amount)
     {
-      
-        
+        gold = PlayerPrefs.GetFloat("gold");
+        gold += amount;
+        goldText.text = gold.ToString();
+        PlayerPrefs.SetFloat("gold", gold);
     }
+
 
 
     public void CharacterChangeCheck()
@@ -213,5 +218,33 @@ public class GameManager : MonoBehaviour
         archerEnergyEarn = PlayerPrefs.GetFloat("archerEnergy");
         balistaDamage = PlayerPrefs.GetFloat("archerBalista");
         balistaTime = PlayerPrefs.GetFloat("archerBalistaTime");
+
+        mageHealth = PlayerPrefs.GetFloat("mageHealth");
+        mageDamage = PlayerPrefs.GetFloat("mageDamage");
+        mageEnergyEarn = PlayerPrefs.GetFloat("mageEnergy");
+        mageFireballDamage = PlayerPrefs.GetFloat("mageFireball");
+        mageAreaDamage = PlayerPrefs.GetFloat("mageFlame");
+
+        ninjaHealth = PlayerPrefs.GetFloat("ninjaHealth");
+        ninjaDamage = PlayerPrefs.GetFloat("ninjaDamage");
+        ninjaEnergyEarn = PlayerPrefs.GetFloat("ninjaEnergy");
+        invisibilityTime = PlayerPrefs.GetFloat("ninjaInvisibility");
+
+        wizardHealth = PlayerPrefs.GetFloat("wizardHealth");
+        wizardDamage = PlayerPrefs.GetFloat("wizardDamage");
+        wizardEnergyEarn = PlayerPrefs.GetFloat("wizardEnergy");
+        wizardHeal = PlayerPrefs.GetFloat("wizardHealing");
+        wizardHealTime = PlayerPrefs.GetFloat("wizardHealingTime");
+
+        bomberHealth = PlayerPrefs.GetFloat("bomberHealth");
+        bomberDamage = PlayerPrefs.GetFloat("bomberDamage");
+        bomberEnergyEarn = PlayerPrefs.GetFloat("bomberEnergy");
+        bomberSkillDamage = PlayerPrefs.GetFloat("bomberMiniBombs");
+
+        hammerHealth = PlayerPrefs.GetFloat("hammerHealth");
+        hammerDamage = PlayerPrefs.GetFloat("hammerDamage");
+        hammerEnergyEarn = PlayerPrefs.GetFloat("hammerEnergy");
+        hammerFlameDamage = PlayerPrefs.GetFloat("hammerRing");
+        hammerFlameTime = PlayerPrefs.GetFloat("hammerRingTime");
     }
 }
