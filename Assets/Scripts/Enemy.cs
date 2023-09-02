@@ -8,9 +8,7 @@ using TMPro;
 public class Enemy : MonoBehaviour
 {
     [HideInInspector] public Animator anim;
-    public bool Idle;
-    public bool Walk;
-    public bool Attack;
+
     public List<Transform> walkPoints;
     [HideInInspector] public float idleWaitTime;
     [HideInInspector] public NavMeshAgent navMesh;
@@ -40,6 +38,10 @@ public class Enemy : MonoBehaviour
     public bool dead;
     public Transform coins;
     public int dropCoinCount;
+    public bool attack1Frame, idle1Frame, walk1Frame;
+    public string state;
+    public bool attack;
+    float walkTime;
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -50,7 +52,8 @@ public class Enemy : MonoBehaviour
             walkPoints.Add(walkTransforms.GetChild(i));
         }
         walkTransforms.parent = GameObject.FindGameObjectWithTag("WalkTransforms").transform;
-        WalkDecision();
+        state = "walk";
+
         rangeObject.transform.localScale = new Vector3(range * 2, 0.01f, range * 2);
         fieldOfViewObject.transform.localScale = new Vector3(fieldOfViewRange * 2, 0.01f, fieldOfViewRange * 2);
         health = maxHealth;
@@ -66,71 +69,81 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        switch (state)
+        {
+            case "idle":
+                IdleState();
+                break;
+            case "walk":
+                WalkState();
+                break;
+            case "attack":
+                AttackState();
+                break;
+            case "die":
 
-        if (Idle)
-        {
-            IdleState();
+                break;
         }
-        if (Walk)
-        {
-            WalkState();
-        }
-        if (Attack)
-        {
-            AttackState();
-        }
+       
         FindClosestEnemy();
         if (dead)
         {
             dead = false;
-            anim.SetBool("Walk", false);
-            anim.SetBool("Idle", false);
-            anim.SetBool("Attack", false);
-            anim.SetBool("Die", true);
+            anim.SetTrigger("Die");
             Destroy(navMesh);
             Destroy(GetComponent<Enemy>());
         }
-
+      
 
         if (gettingDamage)
         {
             gettingDamageTimer += Time.deltaTime;
             if (gettingDamageTimer > 5)
             {
-                navMesh.SetDestination(walkPoints[currentWalkPoint].position);
+                attack = false;
                 gettingDamage = false;
                 gettingDamageTimer = 0;
-                WalkDecision();
-                Attack = false;
-
+                walk1Frame = false;
+                state = "walk";
             }
         }
-       
 
+        RangeControl();
     }
 
+    public void RangeControl()
+    {
+        if(Vector3.Distance(transform.position,closestTarget.transform.position)<fieldOfViewRange && canAttack && !attack)
+        {
+            attack = true;
+            state = "attack";
+        }
+    }
     public void AttackState()
     {
         if (closestTarget != null)
         {
-            if (Vector3.Distance(transform.position, closestTarget.transform.position) < range)
+            if (Vector3.Distance(transform.position, closestTarget.transform.position) < range && canAttack)
             {
+                if (!attack1Frame)
+                {
+                    attack1Frame = true;
+                    walk1Frame = false;
+                    idle1Frame = false;
+                    anim.SetTrigger("Attack");
+                }
+                navMesh.isStopped = true;
                 var lookPos = closestTarget.transform.position - transform.position;
                 lookPos.y = 0;
                 var rotation = Quaternion.LookRotation(lookPos);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 50);
-                anim.SetBool("Walk", false);
-                anim.SetBool("Idle", false);
-                anim.SetBool("Attack", true);
             }
             else
             {
-                navMesh.SetDestination(closestTarget.transform.position);
-                anim.SetBool("Walk", true);
-                anim.SetBool("Idle", false);
-                anim.SetBool("Attack", false);
+                state = "walk";
             }
         }
+       
       
     }
    
@@ -158,113 +171,113 @@ public class Enemy : MonoBehaviour
                     distanceClosestEnemy = distanceToEnemy;
                     closestEnemy = currentEnemy;
                     closestTarget = closestEnemy.gameObject;
-                    if (!throwHero)
-                    {
-                        if (Vector3.Distance(transform.position, closestTarget.transform.position) < fieldOfViewRange && canAttack)
-                        {
-                            Attack = true;
-                        }
-                        else
-                        {
-                            if (Attack && !gettingDamage)
-                            {
-                                Attack = false;
-                                WalkDecision();
-                            }
-                        }
-                      
-                    }
-                    else
-                    {
-                        if (Vector3.Distance(transform.position, closestTarget.transform.position) < fieldOfViewRange)
-                        {
-                            Attack = true;
-                        }
-                        else
-                        {
-                            if (Attack && !gettingDamage)
-                            {
-                                Attack = false;
-                                WalkDecision();
-                            }
-                        }
-                    }
-
                 }
             }
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, -transform.position + closestEnemy.transform.position, out hit, 100, layerMask))
+            if (Physics.Raycast(transform.position + new Vector3(0, 1, 0), -transform.position + closestTarget.transform.position, out hit, 100, layerMask))
             {
                 if (hit.transform.gameObject.layer == 6)
                 {
-
+                  //  Debug.DrawRay(transform.position + new Vector3(0, 1, 0), -transform.position + hit.transform.position, Color.red);
                     canAttack = false;
                 }
                 else
                 {
-
+                   // Debug.DrawRay(transform.position, -transform.position + closestTarget.transform.position, Color.red);
                     canAttack = true;
                 }
             }
+
         }
         else
         {
             if (closestTarget != null)
             {
                 closestTarget = null;
-                Attack = false;
-                WalkDecision();
             }
         }
 
      
 
     }
+
+  
+  
     public void IdleState()
     {
+        if (!idle1Frame)
+        {
+            idle1Frame = true;
+            walk1Frame = false;
+            attack1Frame = false;
+            anim.SetTrigger("Idle");
+            navMesh.isStopped = true;
+        }
         idleWaitTimer += Time.deltaTime;
         if (idleWaitTimer > idleWaitTime)
         {
             idleWaitTimer = 0;
-            WalkDecision();
-            Idle = false;
+            state = "walk";
         }
     }
     public void WalkState()
     {
-        if (Vector3.Distance(transform.position, target.position) < 2) // Go Idle
+        walkTime += Time.deltaTime;
+        if (walkTime > 10)
         {
-            Walk = false;
-            Idle = true;
-            anim.SetBool("Walk", false);
-            anim.SetBool("Idle", true);
-            anim.SetBool("Attack", false);
+            state = "idle";
             idleWaitTime = Random.Range(2f, 5f);
+            walkTime = 0;
+            attack = false;
         }
-    }
-    public void WalkDecision()
-    {
-        Walk = true;
-        currentWalkPoint = Random.Range(0, walkPoints.Count);
-        navMesh.SetDestination(walkPoints[currentWalkPoint].transform.position);
-        target = walkPoints[currentWalkPoint];
-        anim.SetBool("Walk", true);
-        anim.SetBool("Idle", false);
-        anim.SetBool("Attack", false);
+        if (!attack)
+        {
+            if (!walk1Frame)
+            {
+                walk1Frame = true;
+                idle1Frame = false;
+                attack1Frame = false;
+                
+                currentWalkPoint = Random.Range(0, walkPoints.Count);
+                navMesh.SetDestination(walkPoints[currentWalkPoint].transform.position);
+                target = walkPoints[currentWalkPoint];
+                anim.SetTrigger("Walk");
+            }
+            navMesh.isStopped = false;
+            if (Vector3.Distance(transform.position, target.position) < 2) // Go Idle
+            {
+                state = "idle";
+                idleWaitTime = Random.Range(2f, 5f);
+            }
+        }
+        else
+        {
+            if (!walk1Frame)
+            {
+                walk1Frame = true;
+                idle1Frame = false;
+                attack1Frame = false;
+                
+               
+                anim.SetTrigger("Walk");
+            }
+            if (Vector3.Distance(transform.position, closestTarget.transform.position) < range && canAttack)
+            {
+                state = "attack";
+            }
+                navMesh.SetDestination(closestTarget.transform.position);
+            navMesh.isStopped = false;
+        }
+       
     }
 
     public void GetDamage(float damage)
     {
         gettingDamage = true;
         gettingDamageTimer = 0;
-        Walk = false;
-        Idle = false;
-        Attack = true;
-        if (closestTarget != null)
-        {
-            navMesh.SetDestination(closestTarget.transform.position);
-        }
-       
+        attack = true;
+        state = "attack";
+
 
         health -= damage;
         healthBar.fillAmount = health / maxHealth;

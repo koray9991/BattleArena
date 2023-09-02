@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
     public Vector3 vCamFollowOffset;
     public float gold;
     public TextMeshProUGUI goldText;
+    public int enemyCount;
+    public GameObject enemyDefault;
+    public bool enemiesFinish;
 
     [Header("Warrior")]
     public float warriorDamage;
@@ -62,10 +65,11 @@ public class GameManager : MonoBehaviour
     public float hammerFlameDamage;
     public float hammerFlameTime;
     public float hammerEnergyEarn;
-
+  
+   
     private void Awake()
     {
-        Application.targetFrameRate = 120;
+       
         CharacterPrefs();
 
         foreach (PlayerType fooObj in FindObjectsOfType<PlayerType>())
@@ -93,7 +97,18 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("gold", gold);
     }
 
+    private void Update()
+    {
+        CharacterChangeCheck();
+        enemyCount = FindObjectsOfType<Enemy>().Length;
+        if(!enemiesFinish && enemyCount == 0)
+        {
+            enemyDefault.SetActive(true);
+            enemiesFinish = true;
+        }
 
+      
+    }
 
     public void CharacterChangeCheck()
     {
@@ -202,7 +217,7 @@ public class GameManager : MonoBehaviour
 
     public void SlowMo(float time)
     {
-        Time.timeScale = 0.3f;
+      //  Time.timeScale = 0.3f;
         DOVirtual.DelayedCall(time, () => Time.timeScale = 1,false);
     }
 

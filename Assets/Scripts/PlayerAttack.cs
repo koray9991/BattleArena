@@ -44,16 +44,16 @@ public class PlayerAttack : MonoBehaviour
                     closestEnemy = currentEnemy;
                     closestTarget = closestEnemy.gameObject;
                     RaycastHit hit;
-                    if (Physics.Raycast(transform.position + new Vector3(0, 1, 0), -transform.position + closestEnemy.transform.position, out hit, 100, layerMask))
+                    if (Physics.Raycast(transform.position + new Vector3(0, 1, 0), -transform.position + closestTarget.transform.position, out hit, 100, layerMask))
                     {
                         if (hit.transform.gameObject.layer == 6)
                         {
-                            Debug.DrawRay(transform.position + new Vector3(0, 1, 0), -transform.position + hit.transform.position, Color.red);
+                           Debug.DrawRay(transform.position + new Vector3(0, 1, 0), -transform.position + hit.transform.position, Color.red);
                             canAttack = false;
                         }
                         else
                         {
-                            Debug.DrawRay(transform.position, -transform.position + closestEnemy.transform.position, Color.red);
+                           Debug.DrawRay(transform.position, -transform.position + closestTarget.transform.position, Color.red);
                             canAttack = true;
                         }
                     }

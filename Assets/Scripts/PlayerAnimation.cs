@@ -90,13 +90,14 @@ public class PlayerAnimation : MonoBehaviour
     }
     public void Dead()
     {
-        playerMovement.rb.isKinematic = true;
+       
         Destroy(transform.GetComponent<PlayerMovement>());
         Destroy(GetComponent<PlayerAttack>());
         Destroy(GetComponent<PlayerType>());
         Destroy(GetComponent<Ai>());
         Destroy(GetComponent<NavMeshAgent>());
         Destroy(GetComponent<Health>());
+        playerMovement.rb.constraints = RigidbodyConstraints.FreezePosition;
         Death();
     }
 }
